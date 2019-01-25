@@ -20,28 +20,31 @@
 package eks
 
 import (
+	"github.com/aws/aws-sdk-go/aws/session"
 	flag "github.com/spf13/pflag"
 )
 
 // Structure of `azure.json` required by external-dns
 type ExternalDNSConfig struct {
 	AWSAccessKeyID     string `json:"aws_access_key_id"`
-	AWSAccessKeySecret string `json:"aws_access_key_secret"`
+	AWSSecretAccessKey string `json:"aws_secret_access_key"`
 }
 
 // Config options required by oauth2-proxy
 type OauthProxyConfig struct {
-	ClientID      string   `json:"client_id"`
-	ClientSecret  string   `json:"client_secret"`
-	CookieSecret  string   `json:"cookie_secret"`
-	AuthzDomain   string   `json:"authz_domain"`
-	AWSRegion     []string `json:"aws_region"`
-	AWSUserPoolID string   `json:"aws_user_pool_id"`
+	//AuthzDomain   string `json:"authz_domain"`
+	ClientID      string `json:"client_id"`
+	ClientSecret  string `json:"client_secret"`
+	CookieSecret  string `json:"cookie_secret"`
+	AWSRegion     string `json:"aws_region"`
+	AWSUserPoolID string `json:"aws_user_pool_id"`
 }
 
-// Local config required for GKE platforms
+// Local config required for EKS platforms
 type Config struct {
 	flags *flag.FlagSet
+	// Pointer to the current session from the AWS SDK
+	session *session.Session
 
 	// TODO: Promote this to a proper (versioned) k8s Object
 	DNSZone      string            `json:"dnsZone"`

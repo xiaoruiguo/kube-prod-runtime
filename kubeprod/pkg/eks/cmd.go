@@ -20,21 +20,15 @@
 package eks
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	kubeprodcmd "github.com/bitnami/kube-prod-runtime/kubeprod/cmd"
 )
 
 const (
-	flagEmail             = "email"
-	flagDNSSuffix         = "dns-zone"
-	flagRegion            = "region"
-	flagAuthzDomain       = "authz-domain"
-	flagOauthClientId     = "oauth-client-id"
-	flagOauthClientSecret = "oauth-client-secret"
-	flagOauthGoogleGroups = "oauth-google-groups"
+	flagDNSSuffix          = "dns-zone"
+	flagAWSAccessKeyID     = "access-key-id"
+	flagAWSSecretAccessKey = "secret-access-key"
 )
 
 var eksCmd = &cobra.Command{
@@ -54,8 +48,7 @@ var eksCmd = &cobra.Command{
 func init() {
 	kubeprodcmd.InstallCmd.AddCommand(eksCmd)
 
-	eksCmd.PersistentFlags().String(flagEmail, os.Getenv("EMAIL"), "Contact email for cluster admin")
 	eksCmd.PersistentFlags().String(flagDNSSuffix, "", "External DNS zone for public endpoints")
-	eksCmd.PersistentFlags().String(flagAuthzDomain, "", "Restrict authorized users to this Google email domain")
-	eksCmd.PersistentFlags().String(flagRegion, "", "AWS region to use for managed resources")
+	eksCmd.PersistentFlags().String(flagAWSAccessKeyID, "", "Access key ID for External DNS integration")
+	eksCmd.PersistentFlags().String(flagAWSSecretAccessKey, "", "Secret access key for External DNS integration")
 }
