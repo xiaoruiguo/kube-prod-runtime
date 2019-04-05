@@ -138,10 +138,10 @@ local grafana = import "../components/grafana.jsonnet";
     },
   },
 
-  // cert_manager: cert_manager {
-  //   letsencrypt_contact_email:: $.letsencrypt_contact_email,
-  //   letsencrypt_environment:: $.letsencrypt_environment,
-  // },
+  cert_manager: cert_manager {
+    letsencrypt_contact_email:: $.letsencrypt_contact_email,
+    letsencrypt_environment:: $.letsencrypt_environment,
+  },
 
   nginx_ingress: nginx_ingress {
   },
@@ -159,41 +159,41 @@ local grafana = import "../components/grafana.jsonnet";
   //   },
   // },
 
-  // oauth2_proxy: oauth2_proxy {
-  //   secret+: {
-  //     data_+: $.config.oauthProxy,
-  //   },
+  oauth2_proxy: oauth2_proxy {
+    secret+: {
+      data_+: $.config.oauthProxy,
+    },
 
-  //   ingress+: {
-  //     host: "auth." + $.external_dns_zone_name,
-  //   },
+    ingress+: {
+      host: "auth." + $.external_dns_zone_name,
+    },
 
-  //   deploy+: {
-  //     spec+: {
-  //       template+: {
-  //         spec+: {
-  //           containers_+: {
-  //             proxy+: {
-  //               args_+: {
-  //                 provider: "oidc",
-  //                 "oidc-issuer-url": "https://cognito-idp.%s.amazonaws.com/%s" % [
-  //                   $.config.oauthProxy.aws_region,
-  //                   $.config.oauthProxy.aws_user_pool_id,
-  //                 ],
-  //                 /* NOTE: disable cookie refresh token.
-  //                  * As per https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html:
-  //                  * The refresh token is defined in the specification, but is not currently implemented to
-  //                  * be returned from the Token Endpoint.
-  //                  */
-  //                 "cookie-refresh": "0",
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
+    deploy+: {
+      spec+: {
+        template+: {
+          spec+: {
+            containers_+: {
+              proxy+: {
+                args_+: {
+                  provider: "oidc",
+                  "oidc-issuer-url": "https://cognito-idp.%s.amazonaws.com/%s" % [
+                    $.config.oauthProxy.aws_region,
+                    $.config.oauthProxy.aws_user_pool_id,
+                  ],
+                  /* NOTE: disable cookie refresh token.
+                   * As per https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html:
+                   * The refresh token is defined in the specification, but is not currently implemented to
+                   * be returned from the Token Endpoint.
+                   */
+                  "cookie-refresh": "0",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 
   // prometheus: prometheus {
   //   ingress+: {
