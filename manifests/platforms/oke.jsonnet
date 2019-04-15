@@ -71,12 +71,12 @@ local grafana = import "../components/grafana.jsonnet";
 
   version: version,
 
-  // grafana: grafana {
-  //   prometheus:: $.prometheus.prometheus.svc,
-  //   ingress+: {
-  //     host: "grafana." + $.external_dns_zone_name,
-  //   },
-  // },
+  grafana: grafana {
+    prometheus:: $.prometheus.prometheus.svc,
+    ingress+: {
+      host: "grafana." + $.external_dns_zone_name,
+    },
+  },
 
   // https://github.com/kubernetes-incubator/external-dns/blob/master/docs/tutorials/oracle.md
   /* NOTES: Integration between ExternalDNS and OCI requires the following:
@@ -146,19 +146,9 @@ local grafana = import "../components/grafana.jsonnet";
   nginx_ingress: nginx_ingress {
   },
 
-  //   svc+: {
-  //     local this = self,
-  //     metadata+: {
-  //       annotations+: {
-  //         "service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled": "true",
-  //         "service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout": std.toString(this.target_pod.spec.terminationGracePeriodSeconds),
-  //         // Use PROXY protocol (nginx supports this too)
-  //         "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol": "*",
-  //       },
-  //     },
-  //   },
-  // },
-
+/*
+ * TODO: fix for OKE
+ *
   oauth2_proxy: oauth2_proxy {
     secret+: {
       data_+: $.config.oauthProxy,
@@ -175,17 +165,6 @@ local grafana = import "../components/grafana.jsonnet";
             containers_+: {
               proxy+: {
                 args_+: {
-                  provider: "oidc",
-                  "oidc-issuer-url": "https://cognito-idp.%s.amazonaws.com/%s" % [
-                    $.config.oauthProxy.aws_region,
-                    $.config.oauthProxy.aws_user_pool_id,
-                  ],
-                  /* NOTE: disable cookie refresh token.
-                   * As per https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html:
-                   * The refresh token is defined in the specification, but is not currently implemented to
-                   * be returned from the Token Endpoint.
-                   */
-                  "cookie-refresh": "0",
                 },
               },
             },
@@ -194,23 +173,24 @@ local grafana = import "../components/grafana.jsonnet";
       },
     },
   },
+*/
 
-  // prometheus: prometheus {
-  //   ingress+: {
-  //     host: "prometheus." + $.external_dns_zone_name,
-  //   },
-  // },
+  prometheus: prometheus {
+    ingress+: {
+      host: "prometheus." + $.external_dns_zone_name,
+    },
+  },
 
-  // fluentd_es: fluentd_es {
-  //   es:: $.elasticsearch,
-  // },
+  fluentd_es: fluentd_es {
+    es:: $.elasticsearch,
+  },
 
-  // elasticsearch: elasticsearch,
+  elasticsearch: elasticsearch,
 
-  // kibana: kibana {
-  //   es:: $.elasticsearch,
-  //   ingress+: {
-  //     host: "kibana." + $.external_dns_zone_name,
-  //   },
-  // },
+  kibana: kibana {
+    es:: $.elasticsearch,
+    ingress+: {
+      host: "kibana." + $.external_dns_zone_name,
+    },
+  },
 }
